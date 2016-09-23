@@ -1,5 +1,5 @@
 from numpy import genfromtxt
-from utility import b2str, write_to_file
+from utility import b2str, write_to_file, folder_creation
 from protein import Protein
 from Bio.PDB import PDBList, PPBuilder, PDBParser
 from pypdb import get_pdb_file
@@ -19,16 +19,16 @@ def construct_protein_list(file_name):
 
 def fill_proteins_sequences(proteins_list):
     ppb = PPBuilder()
-    parser = PDBParser
+    parser = PDBParser()
+    folder_path = folder_creation(input("Enter foldername to store pdb files: "))
 
     for protein in proteins_list:
         pdb_structure = get_pdb_file(protein.id, filetype='pdb', compression=False)
-        file = write_to_file(str(protein.id), "pdb", pdb_structure, folder_path="data")
+        file = write_to_file(str(protein.id), "pdb", pdb_structure, folder_path)
         structure = parser.get_structure(protein.id, file.name)
-        print(structure)
 
-        # for pp in ppb.build_peptides(pdb_structure):
-        #     print(pp.get_sequence)
+        for pp in ppb.build_peptides(structure):
+            print(pp.get_sequence)
 
 
 
