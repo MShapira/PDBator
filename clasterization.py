@@ -1,31 +1,23 @@
-from protein import Protein
+from claster import Claster
 from extraction import construct_protein_list
 
 
 def clasterization_via_ligand_size(proteins_list):
-    small = []
-    medium = []
-    big = []
-    without_formula = []
-
+    claster = Claster()
     for protein in proteins_list:
         if protein.azole_group == 1:
-            small.append(protein)
+            claster.small.append(protein)
         elif protein.azole_group == 2:
-            medium.append(protein)
+            claster.medium.append(protein)
         elif protein.azole_group == 3:
-            big.append(protein)
+            claster.big.append(protein)
         else:
-            without_formula.append(protein)
+            claster.without_formula.append(protein)
 
-    return small, medium, big, without_formula
+    return claster
 
 
-def clasterization_via_ligand_size(proteins_list):
-    small = []
-    medium = []
-    big = []
-    without_formula = []
+def clasterization_via_ligand_type(proteins_list):
 
     for protein in proteins_list:
         if protein.azole_group == 1:

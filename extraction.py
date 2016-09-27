@@ -32,4 +32,4 @@ def fill_proteins_sequences(proteins_list):
 
 
 
-fill_proteins_sequences(construct_protein_list(input("filename: ")))
+fill_proteins_sequences(construct_protein_list(input("Input filename: ")))
