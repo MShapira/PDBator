@@ -7,10 +7,10 @@ def b2str(bytes):
 
 
 #Folder creation to store PDB files
-def folder_creation(folder_path=None):
+def folder_creation(folder_path):
     foldername = str(time.ctime())
 
-    if folder_path is None:
+    if folder_path == '':
         newpath = "data/" + foldername
     else:
         newpath = folder_path + "/" + foldername
