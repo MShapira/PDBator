@@ -6,19 +6,26 @@ def b2str(bytes):
     return str(bytes)[2:-1]
 
 
-#Folder creation to store PDB files
-def folder_creation(folder_path):
-    foldername = str(time.ctime())
+#Folder creation to store files
+def folder_creation(folder_name):
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
 
-    if folder_path == '':
-        newpath = "data/" + foldername
+    return folder_name
+
+
+# Creating path of new folder
+#Params: special_folder(string), name of folder
+def folder_path_generation(special_folder):
+    user_folder_name = input("Please, enter the folder name for storing files: ")
+    folder_name = str(time.ctime())
+
+    if user_folder_name == '':
+        path = "data/" + folder_name + "/" + special_folder
     else:
-        newpath = folder_path + "/" + foldername
+        path = user_folder_name + "/" + folder_name + "/" + special_folder
 
-    if not os.path.exists(newpath):
-        os.makedirs(newpath)
-
-    return newpath
+    return path
 
 
 # simple writing to file and generating folder

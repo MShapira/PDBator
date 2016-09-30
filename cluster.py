@@ -3,9 +3,6 @@ class Cluster(object):
         self.name = name
         self.index = index
 
-        self.small = []
-        self.medium = []
-        self.big = []
-        self.without_formula = []
+        self.azole_size_dictionary = {}
 
-        self.azole_dictionary = {}
+        self.azole_type_dictionary = {}
