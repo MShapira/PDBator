@@ -6,11 +6,11 @@ from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Alphabet import generic_protein
-from clusterization import clusterisation_via_ligand_type, clusterisation_via_ligand_size
 from Bio.Align import MultipleSeqAlignment
 
+
 # simple array construction (array of proteins)
-#Params file_name with input data(string)
+# Params file_name with input data(string)
 def construct_protein_list(file_name):
     proteins_list = []
 
@@ -23,7 +23,7 @@ def construct_protein_list(file_name):
 
 
 # extraction sequence from pdb file
-#Params: filename(string)
+# Params: filename(string)
 def extract_sequence(file_name):
     file = open(file_name, 'r')
     seq = ''
@@ -37,19 +37,19 @@ def extract_sequence(file_name):
 
 
 # filling protein sequences from pdb files
-#Params: protein_list(array)
-def fill_proteins_sequences(proteins_list, folder_path):
+# Params: protein_list(array)
+def fill_proteins_sequences(proteins_list, folder_path, special_folder):
 
     for protein in proteins_list:
         pdb_structure = get_pdb_file(protein.id, filetype='pdb', compression=False)
-        file = write_to_file(str(protein.id), "pdb", pdb_structure, folder_path)
+        file = write_to_file(str(protein.id), "pdb", pdb_structure, folder_path + "/" + special_folder)
         protein.sequence = extract_sequence(file.name)
 
     return proteins_list
 
 
 # making multiple alignment per group of clusters
-#Params: dictionary(dictionary)
+# Params: dictionary(dictionary)
 def alignment_at_cluster_group(dictionary):
     keys = dictionary.keys()
     cluster_group_alignment = []
@@ -70,9 +70,9 @@ def alignment_at_cluster_group(dictionary):
 
 
 # saving results after local alignment
-#Params: cluster_group_alignment(array with arrays, where [0] - title, [1:-1] - objects)
+# Params: cluster_group_alignment(array with arrays, where [0] - title, [1:-1] - objects)
 def saving_alignment_results(cluster_group_alignment, folder_name, cluster_type_name):
-    file = open(folder_name + "/" + cluster_type_name + ".phy", "w")
+    file = open(folder_name + "/results" + "/" + cluster_type_name + ".phy", "w")
 
     for alignmented_group in cluster_group_alignment:
         file.write(alignmented_group[0] + "\n")
