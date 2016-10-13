@@ -7,7 +7,8 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Alphabet import generic_protein
 from Bio.Align import MultipleSeqAlignment
-
+import os
+from Bio.Align.Applications import ClustalwCommandline
 
 # simple array construction (array of proteins)
 # Params file_name with input data(string)
@@ -42,8 +43,12 @@ def fill_proteins_sequences(proteins_list, folder_path, special_folder):
 
     for protein in proteins_list:
         pdb_structure = get_pdb_file(protein.id, filetype='pdb', compression=False)
+
+        if not os.path.exists(folder_path + '/' + special_folder):
+            os.makedirs(folder_path + '/' + special_folder)
+
         file = write_to_file(str(protein.id), "pdb", pdb_structure, folder_path + "/" + special_folder)
-        protein.sequence = extract_sequence(file.name)
+        protein.sequence = str(extract_sequence(file.name))
 
     return proteins_list
 
@@ -72,9 +77,17 @@ def alignment_at_cluster_group(dictionary):
 # saving results after local alignment
 # Params: cluster_group_alignment(array with arrays, where [0] - title, [1:-1] - objects)
 def saving_alignment_results(cluster_group_alignment, folder_name, cluster_type_name):
+    if not os.path.exists(folder_name + "/results"):
+            os.makedirs(folder_name + "/results")
+
     file = open(folder_name + "/results" + "/" + cluster_type_name + ".phy", "w")
 
     for alignmented_group in cluster_group_alignment:
+
+        tr = NCBIWWW.qblast("blastp", "swissprot", sequence_data, hitlist_size=hitlist, descriptions=hitlist, alignments=hitlist, megablast=mb, format_type=format_output)
+        print "BLAST have been done -> Storing results"
+        results.append(tr)
+
         file.write(alignmented_group[0] + "\n")
         for align in alignmented_group[1:-1]:
             for obj in align:
