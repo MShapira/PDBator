@@ -3,8 +3,11 @@ from utility import b2str, write_to_file, folder_creation
 from protein import Protein
 from pypdb import get_pdb_file
 from Bio import SeqIO
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+from Bio.Alphabet import generic_protein
+from Bio.Align import MultipleSeqAlignment
 import os
-from rpy2.robjects import r
 
 # simple array construction (array of proteins)
 # Params file_name with input data(string)
@@ -58,17 +61,22 @@ def alignment_at_cluster_group(dictionary):
     for key in keys:
         alignmented_group = []
         alignment = []
-        r('require(bio3d)')
 
         for protein in dictionary[key]:
-            alignment.append(protein.sequence)
+            alignment.append(SeqRecord(Seq(protein.sequence, generic_protein), id=protein.id))
 
-        aln = r('seqbind("{}", blank = "-")'.format(alignment))
-        r('aln = "{0}"'.format(aln))
-        # outfile = r('outfile = "{}"'.format(dictionary[key]))
+        maxlen = max(len(protein.seq) for protein in alignment)
+
+        for protein in alignment:
+            print(len(protein.seq))
+            if len(protein.seq) != maxlen:
+                sequence = str(protein.seq).ljust(maxlen, '.')
+                protein.seq = Seq(sequence)
+
+        assert all(len(protein.seq) == maxlen for protein in alignment)
 
         alignmented_group.append(key)
-        alignmented_group.append(r('seqaln(aln=aln, id=NULL, profile=NULL, exefile="muscle", protein=TRUE'))
+        alignmented_group.append(MultipleSeqAlignment(alignment, generic_protein))
 
         cluster_group_alignment.append(alignmented_group)
 
@@ -86,7 +94,7 @@ def saving_alignment_results(cluster_group_alignment, folder_name, cluster_type_
     for alignmented_group in cluster_group_alignment:
 
         file.write(alignmented_group[0] + "\n")
-        for align in alignmented_group[1:-1]:
+        for align in alignmented_group[0:-1]:
             for obj in align:
                 file.write(obj.id + " " + obj.seq)
     file.close()
