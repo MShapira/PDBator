@@ -3,12 +3,8 @@ from utility import b2str, write_to_file, folder_creation
 from protein import Protein
 from pypdb import get_pdb_file
 from Bio import SeqIO
-from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
-from Bio.Alphabet import generic_protein
-from Bio.Align import MultipleSeqAlignment
 import os
-from Bio.Align.Applications import ClustalwCommandline
+from rpy2.robjects import r
 
 # simple array construction (array of proteins)
 # Params file_name with input data(string)
@@ -62,12 +58,17 @@ def alignment_at_cluster_group(dictionary):
     for key in keys:
         alignmented_group = []
         alignment = []
+        r('require(bio3d)')
 
         for protein in dictionary[key]:
-            alignment.append(SeqRecord(Seq(protein.sequence, generic_protein), id=protein.id))
+            alignment.append(protein.sequence)
+
+        aln = r('seqbind("{}", blank = "-")'.format(alignment))
+        r('aln = "{0}"'.format(aln))
+        # outfile = r('outfile = "{}"'.format(dictionary[key]))
 
         alignmented_group.append(key)
-        alignmented_group.append(MultipleSeqAlignment(alignment, generic_protein))
+        alignmented_group.append(r('seqaln(aln=aln, id=NULL, profile=NULL, exefile="muscle", protein=TRUE'))
 
         cluster_group_alignment.append(alignmented_group)
 
@@ -83,10 +84,6 @@ def saving_alignment_results(cluster_group_alignment, folder_name, cluster_type_
     file = open(folder_name + "/results" + "/" + cluster_type_name + ".phy", "w")
 
     for alignmented_group in cluster_group_alignment:
-
-        tr = NCBIWWW.qblast("blastp", "swissprot", sequence_data, hitlist_size=hitlist, descriptions=hitlist, alignments=hitlist, megablast=mb, format_type=format_output)
-        print "BLAST have been done -> Storing results"
-        results.append(tr)
 
         file.write(alignmented_group[0] + "\n")
         for align in alignmented_group[1:-1]:
