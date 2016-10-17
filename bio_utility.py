@@ -68,14 +68,14 @@ def alignment_at_cluster_group(dictionary):
         maxlen = max(len(protein.seq) for protein in alignment)
 
         for protein in alignment:
-            print(len(protein.seq))
             if len(protein.seq) != maxlen:
-                sequence = str(protein.seq).ljust(maxlen, '.')
+                sequence = str(protein.seq).ljust(maxlen, '-')
                 protein.seq = Seq(sequence)
 
         assert all(len(protein.seq) == maxlen for protein in alignment)
 
         alignmented_group.append(key)
+        print(alignment)
         alignmented_group.append(MultipleSeqAlignment(alignment, generic_protein))
 
         cluster_group_alignment.append(alignmented_group)
@@ -92,9 +92,13 @@ def saving_alignment_results(cluster_group_alignment, folder_name, cluster_type_
     file = open(folder_name + "/results" + "/" + cluster_type_name + ".phy", "w")
 
     for alignmented_group in cluster_group_alignment:
+        print(alignmented_group)
 
         file.write(alignmented_group[0] + "\n")
-        for align in alignmented_group[0:-1]:
-            for obj in align:
-                file.write(obj.id + " " + obj.seq)
+        for align in alignmented_group[1:]:
+            print(align)
+            for record in align:
+                file.write(record.id)
+                file.write(" ")
+                file.write(str(record.seq))
     file.close()
