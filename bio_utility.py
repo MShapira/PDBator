@@ -86,19 +86,19 @@ def alignment_at_cluster_group(dictionary):
 # saving results after local alignment
 # Params: cluster_group_alignment(array with arrays, where [0] - title, [1:-1] - objects)
 def saving_alignment_results(cluster_group_alignment, folder_name, cluster_type_name):
-    if not os.path.exists(folder_name + "/results"):
-            os.makedirs(folder_name + "/results")
+    if not os.path.exists(folder_name + "/results/" + cluster_type_name):
+            os.makedirs(folder_name + "/results/" + cluster_type_name)
 
-    file = open(folder_name + "/results" + "/" + cluster_type_name + ".phy", "w")
+
 
     for alignmented_group in cluster_group_alignment:
         print(alignmented_group)
 
-        file.write(alignmented_group[0] + "\n")
+        file = open(folder_name + "/results/" + cluster_type_name + "/" + alignmented_group[0] + ".phy", "w")
         for align in alignmented_group[1:]:
             print(align)
             for record in align:
                 file.write(record.id)
                 file.write(" ")
                 file.write(str(record.seq))
-    file.close()
+                file.write('\n')
