@@ -16,7 +16,7 @@ def construct_protein_list(file_name):
 
     input_data = genfromtxt(file_name, dtype=None, delimiter=';', names=True)
     for line in input_data:
-        current_protein = Protein(id=b2str(line['pdb']), azole=b2str(line['azole']), azole_group=b2str(line['azole_group']))
+        current_protein = Protein(id=b2str(line['pdb']), azole=b2str(line['azole']), azole_group=str(line['azole_group']))
         proteins_list.append(current_protein)
 
     return proteins_list
@@ -88,8 +88,6 @@ def alignment_at_cluster_group(dictionary):
 def saving_alignment_results(cluster_group_alignment, folder_name, cluster_type_name):
     if not os.path.exists(folder_name + "/results/" + cluster_type_name):
             os.makedirs(folder_name + "/results/" + cluster_type_name)
-
-
 
     for alignmented_group in cluster_group_alignment:
         print(alignmented_group)
