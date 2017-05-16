@@ -17,7 +17,7 @@ def folder_creation(folder_name):
 # Creating path of new folder
 def folder_path_generation():
     user_folder_name = input("Please, enter the folder name for storing files: ")
-    folder_name = str(time.ctime())
+    folder_name = str(time.ctime()).replace(':', '-').replace(' ', '_')
 
     if user_folder_name == '':
         path = "data/" + folder_name
